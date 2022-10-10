@@ -1,6 +1,6 @@
 // connection to our database (using firebase(db config.))!!!
 import {initializeApp} from 'firebase/app';
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider} from 'firebase/auth';
+import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, createUserWithEmailAndPassword} from 'firebase/auth';
 import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -15,16 +15,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
 	"prompt": "select_account"
 }); // setCustomParameter will take some object as a parameter
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore();
-export const createUserDocumentFromAuth = async (userAuth) => {
+
+// create document using any provider(Google)!!.....
+export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => { //here additionalInformation is an object!!
   const userDocRef = doc(db, 'users', userAuth.uid); // doc() takes 3 arguments - database, collections(table), some identifier like unique id....
   console.log(userDocRef);
   const userSnapshot = await getDoc(userDocRef);
@@ -36,7 +39,7 @@ export const createUserDocumentFromAuth = async (userAuth) => {
     const {displayName, email} = userAuth;
     const createdAt = new Date(); //by this we'll know when the user had signedIN...
     try{
-      await setDoc(userDocRef, {displayName, email, createdAt}) //takes 2 arguments - the doc(which was created earlier) and {fields dat we wanna to save}
+      await setDoc(userDocRef, {displayName, email, createdAt, ...additionalInformation}) //takes 2 arguments - the doc(which was created earlier) and {fields dat we wanna to save}
     }catch(error){
       console.log("error creating the user", error.message);
     }
@@ -45,4 +48,11 @@ export const createUserDocumentFromAuth = async (userAuth) => {
   //if user document exists
   return userDocRef;
   // return userDocRef
+}
+
+// create document using email and password!!....
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+
+  return await createUserWithEmailAndPassword(auth, email, password);
 }
