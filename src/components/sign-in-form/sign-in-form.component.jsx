@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component'
-import {createAuthUserWithEmailAndPassword, createUserDocumentFromAuth} from '../../utils/firebase/firebase.utils'
 import './sign-in-form.styles.scss';
+import {signInWithGooglePopup, createUserDocumentFromAuth, signInUserWithEmailAndPassword} from '../../utils/firebase/firebase.utils';
 //second way is create an object for the form and store all the data in it and use that in useState...
 
 const defaultFormFields = {
@@ -36,11 +36,30 @@ const SignInForm = () => {
 		event.preventDefault();
 
 		try{
+			const response = await signInUserWithEmailAndPassword(email, password);
+			console.log(response);
 			resetFormFields();
 			
 		}catch(error){
-			
+			switch(error.code){
+				case 'auth/wrong-password': alert("Incorrect Password!!");
+				break;
+				case 'auth/user-not-found': alert("User doesn't exist");
+				break;
+				default: console.log(error);
+			}
 		}
+	}
+
+	const signInWithGoogle = async () => {  //used async coz whenever we call some database, it's going to be asynchronous.... 
+		const {user} = await signInWithGooglePopup();
+		console.log(user);
+		// //test/practice
+		// const response = await signInWithGooglePopup();
+		// console.log(response);
+		// const {_tokenResponse} = response;
+		// console.log(_tokenResponse.email);
+		createUserDocumentFromAuth(user);
 	}
 
 	return(
@@ -57,7 +76,10 @@ const SignInForm = () => {
 				{/*<label>Password</label>
 				<input type="password" name="password" required onChange={changeHandler} value={password}/>*/}
 
-				<Button buttonType="" type="submit">Sign In</Button>
+				<div className="buttons-container">
+					<Button type="submit">Sign In</Button>
+					<Button type="button" buttonType="google" onClick={signInWithGoogle}>Google Sign In</Button>
+				</div>
 			</form>
 		</div>
 	);
