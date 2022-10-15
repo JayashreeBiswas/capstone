@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component'
 import {createAuthUserWithEmailAndPassword, createUserDocumentFromAuth} from '../../utils/firebase/firebase.utils'
 import './sign-up-form.styles.scss';
+// import {UserContext} from '../../contexts/user.context';
 //second way is create an object for the form and store all the data in it and use that in useState...
 
 const defaultFormFields = {
@@ -23,6 +24,7 @@ const SignUpForm = () => {
 	const {displayName, email, password, confirmPassword} = formFields;
 
 	console.log(formFields);
+	// const {setCurrentUser} = useContext(UserContext);
 
 	const resetFormFields = () => {
 		setFormFields(defaultFormFields);
@@ -46,6 +48,8 @@ const SignUpForm = () => {
 			const {user} = await createAuthUserWithEmailAndPassword(email, password);
 			console.log(user);
 			await createUserDocumentFromAuth(user, {displayName});
+			// setCurrentUser(user);
+
 			resetFormFields();
 			
 		}catch(error){

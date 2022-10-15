@@ -1,6 +1,6 @@
 // connection to our database (using firebase(db config.))!!!
 import {initializeApp} from 'firebase/app';
-import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from 'firebase/auth';
 import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -62,3 +62,11 @@ export const signInUserWithEmailAndPassword = async (email, password) => {
 
   return await signInWithEmailAndPassword(auth, email, password);
 }
+
+export const signOutUser = async () =>{
+  return await signOut(auth);
+}
+
+export const onAuthStateChangedListner = (callback) => {
+  onAuthStateChanged(auth, callback) // it's a listener model(observer pattern) - here it's going to take our next value and set it as our callback we can add more parameters(error, complete).... here auth is observer
+};

@@ -1,6 +1,5 @@
 // import {useEffect} from 'react';
 // import {getRedirectResult} from 'firebase/auth';
-// import {Outlet} from 'react-router-dom';
 // import {signInWithGooglePopup, createUserDocumentFromAuth, signInWithGoogleRedirect, auth} from '../../utils/firebase/firebase.utils'; // auth will come from getRedirectResult
 import SignUpForm from '../../components/sign-up-form/sign-up-form.component';
 import Button from '../../components/button/button.component';

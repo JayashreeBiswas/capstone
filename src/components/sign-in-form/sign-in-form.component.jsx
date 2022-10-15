@@ -1,10 +1,11 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component'
 import './sign-in-form.styles.scss';
 import {signInWithGooglePopup, createUserDocumentFromAuth, signInUserWithEmailAndPassword} from '../../utils/firebase/firebase.utils';
-//second way is create an object for the form and store all the data in it and use that in useState...
+// import {UserContext} from '../../contexts/user.context';
 
+//second way is create an object for the form and store all the data in it and use that in useState...
 const defaultFormFields = {
 	email: '',
 	password: ''
@@ -22,6 +23,8 @@ const SignInForm = () => {
 
 	console.log(formFields);
 
+	// const {setCurrentUser} = useContext(UserContext); // commented because it's no longer required coz we're using observer pattern(check on firebase.utils and user.context)
+
 	const resetFormFields = () => {
 		setFormFields(defaultFormFields);
 	}
@@ -36,8 +39,9 @@ const SignInForm = () => {
 		event.preventDefault();
 
 		try{
-			const response = await signInUserWithEmailAndPassword(email, password);
-			console.log(response);
+			const {user} = await signInUserWithEmailAndPassword(email, password);
+			console.log(user);
+			// setCurrentUser(user);
 			resetFormFields();
 			
 		}catch(error){
@@ -52,14 +56,18 @@ const SignInForm = () => {
 	}
 
 	const signInWithGoogle = async () => {  //used async coz whenever we call some database, it's going to be asynchronous.... 
-		const {user} = await signInWithGooglePopup();
-		console.log(user);
+
+		// if using observer pattern - no need to use the below code
+		// const {user} = await signInWithGooglePopup();
+		await signInWithGooglePopup();
+		// console.log(user);
 		// //test/practice
 		// const response = await signInWithGooglePopup();
 		// console.log(response);
 		// const {_tokenResponse} = response;
 		// console.log(_tokenResponse.email);
-		createUserDocumentFromAuth(user);
+		// createUserDocumentFromAuth(user); // if using observer pattern - no need to use the below code
+		// setCurrentUser(user);
 	}
 
 	return(
