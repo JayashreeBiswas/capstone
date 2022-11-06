@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import './index.css';
 import App from './App';
 import {UserProvider} from './contexts/user.context';
-import {ProductProvider} from './contexts/product.context';
+import {CategoriesProvider} from './contexts/categories.context';
 import {CartProvider} from './contexts/cart.context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -13,11 +13,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <ProductProvider> 
+        <CategoriesProvider> 
           <CartProvider>
             <App />
           </CartProvider>
-        </ProductProvider>
+        </CategoriesProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
@@ -28,5 +28,5 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 
 // ******************* Important notes *************************
-//ProductProvider is inside the userprovider coz, by doing this products will be only accessible to the authorized users only......
+//CategoriesProvider is inside the userprovider coz, by doing this products will be only accessible to the authorized users only......
 reportWebVitals();
